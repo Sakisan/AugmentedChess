@@ -16,7 +16,7 @@ table#colors
   opacity $colorsOpacity
 
 td
-  border 1px solid
+  border 1px solid black
   text-align center
 
 .white1
@@ -37,19 +37,18 @@ td
 .black3
   background-color lighten($black, $three)
 
-.light
+.lightsquare
   background $light
 
-.dark 
-  background $dark
+.darksquare
+  background $light
+  //background $dark
 
-.black
-  color black
-  text-shadow: 0 0 $pieceGlow white
+#pieces .black
+  color $blackPiece
 
-.white
-  color white
-  text-shadow: 0 0 $pieceGlow black
+#pieces .white
+  color $whitePiece
 
 #pieces
   font-family: 'pgn4web ChessSansUsual','pgn4web Liberation Sans',sans-serif;
