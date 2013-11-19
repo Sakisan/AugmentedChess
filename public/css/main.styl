@@ -6,6 +6,11 @@
   src: url('chessfonts/ChessSansUsual.woff') format('woff'), url('chessfonts/ChessSansUsual.ttf') format('truetype'), url('chessfonts/ChessSansUsual.svg#ChessSansUsual') format('svg');
 }
 
+input#FEN {
+  position absolute
+  bottom 0
+}
+
 table
   width 100%
   position absolute
@@ -19,28 +24,28 @@ td
   border 1px solid black
   text-align center
 
-.white1
+#colors .white1
   background-color lighten($white, $one)
 
-.white2
+#colors .white2
   background-color lighten($white, $two)
 
-.white3
+#colors .white3
   background-color lighten($white, $three)
 
-.black1
+#colors .black1
   background-color lighten($black, $one)
 
-.black2
+#colors .black2
   background-color lighten($black, $two)
 
-.black3
+#colors .black3
   background-color lighten($black, $three)
 
-.lightsquare
+#board .lightsquare
   background $light
 
-.darksquare
+#board .darksquare
   background $light
   //background $dark
 
@@ -49,6 +54,9 @@ td
 
 #pieces .white
   color $whitePiece
+
+#pieces .darksquare.bishop
+  text-decoration underline
 
 #pieces
   font-family: 'pgn4web ChessSansUsual','pgn4web Liberation Sans',sans-serif;

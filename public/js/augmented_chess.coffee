@@ -5,26 +5,26 @@
   colorizer = {}
   colorizer[piece] = piece for piece in all_pieces
 
-  piece = {}
-  piece['p'] = 'white pawn'
-  piece['r'] = 'white rook'
-  piece['n'] = 'white knight'
-  piece['b'] = 'white bishop'
-  piece['q'] = 'white queen'
-  piece['k'] = 'white king'
-  piece['P'] = 'black pawn'
-  piece['R'] = 'black rook'
-  piece['N'] = 'black knight'
-  piece['B'] = 'black bishop'
-  piece['Q'] = 'black queen'
-  piece['K'] = 'black king'
-  piece['-'] = 'no_piece'
+  fen_to_piece = {}
+  fen_to_piece['p'] = 'white pawn'
+  fen_to_piece['r'] = 'white rook'
+  fen_to_piece['n'] = 'white knight'
+  fen_to_piece['b'] = 'white bishop'
+  fen_to_piece['q'] = 'white queen'
+  fen_to_piece['k'] = 'white king'
+  fen_to_piece['P'] = 'black pawn'
+  fen_to_piece['R'] = 'black rook'
+  fen_to_piece['N'] = 'black knight'
+  fen_to_piece['B'] = 'black bishop'
+  fen_to_piece['Q'] = 'black queen'
+  fen_to_piece['K'] = 'black king'
+  fen_to_piece['-'] = 'no_piece'
 
   $(document).ready ->
-    style_cells('#board tr:even td:odd', 'darksquare')
-    style_cells('#board tr:even td:even', 'lightsquare')
-    style_cells('#board tr:odd td:even', 'darksquare')
-    style_cells('#board tr:odd td:odd', 'lightsquare')
+    style_cells('#board tr:even td:odd, #pieces tr:even td:odd', 'darksquare')
+    style_cells('#board tr:even td:even, #pieces tr:even td:even', 'lightsquare')
+    style_cells('#board tr:odd td:even, #pieces tr:odd td:even', 'darksquare')
+    style_cells('#board tr:odd td:odd, #pieces tr:odd td:odd', 'lightsquare')
     load_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     resize()
 
@@ -46,26 +46,28 @@
     $(cell).removeClass(c) for cell in cells
 
   remove_all_pieces = ->
-    unstyle_cells('pawn', 'pawn')
-    unstyle_cells('rook', 'rook')
-    unstyle_cells('knight', 'knight')
-    unstyle_cells('bishop', 'bishop')
-    unstyle_cells('queen', 'queen')
-    unstyle_cells('king', 'king')
+    unstyle_cells('.'+piece, piece) for piece in all_pieces
+    $('#colors').find('input').each ->
+      $(this).val(0)
+    '?'
        
 
   load_fen = (fen) ->
+    pattern = /\s*([rnbqkpRNBQKP12345678]+\/){7}([rnbqkpRNBQKP12345678]+)\s[bw-]\s(([kqKQ]{1,4})|(-))\s(([a-h][1-8])|(-))\s\d+\s\d+\s*/;
+    if !pattern.test(fen)
+      fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+
     remove_all_pieces()
     fen_parts = fen.replace(/^\s*/, "").replace(/\s*$/, "").split(/\/|\s/)
     for j in [1..8]
       row = fen_parts[j-1].replace(/\d/g, replaceNumberWithDashes)
       for i in [1..8]
-        style_cells('#pieces .'+j+' .'+s('abcdefgh',i-1), piece[s(row, i-1)]) 
+        style_cells('#pieces .'+j+' .'+s('abcdefgh',i-1), fen_to_piece[s(row, i-1)]) 
     colorize()
 
   replaceNumberWithDashes = (str) ->
     new_str = ''
-    new_str+='-' for i in [0..parseInt(str)]
+    new_str+='-' for i in [1..parseInt(str)]
     new_str
 
   s = (str, i) ->
@@ -79,16 +81,17 @@
         piece = get_piece_on(a, i)      
         white = cell.hasClass('white')
         x = 'abcdefgh'.indexOf(a)+1
+        console.log(colorizer[piece]+'('+x+','+ i+','+ white+')')
         eval(colorizer[piece]+'('+x+','+ i+','+ white+')')
     recolorize()
 
   recolorize = ->
-    unstyle_cells('white1', 'white1')    
-    unstyle_cells('white2', 'white2')   
-    unstyle_cells('white3', 'white3')   
-    unstyle_cells('black1', 'black1')   
-    unstyle_cells('black2', 'black2')   
-    unstyle_cells('black3', 'black3')
+    unstyle_cells('.white1', 'white1')    
+    unstyle_cells('.white2', 'white2')   
+    unstyle_cells('.white3', 'white3')   
+    unstyle_cells('.black1', 'black1')   
+    unstyle_cells('.black2', 'black2')   
+    unstyle_cells('.black3', 'black3')
     for i in [1..8]
       for j in [1..8]
         a = s('abcdefgh',j-1)
@@ -182,6 +185,11 @@
 
   valid_xy = (x,y) ->
     x >= 1 && x <= 8 && y >= 1 && y <= 8
+
+  fen_input = $('input#FEN')
+  fen_input.keypress (e) ->
+    if e.which is 13
+      load_fen(fen_input.val())
 
   the_end = 'end'
 ) jQuery
