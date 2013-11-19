@@ -1,9 +1,11 @@
 mixin makeTable(id)
   table(id=id)
     each number in ["8","7","6","5","4","3","2","1"]
-      tr(class="row"+number)
+      tr(class=number)
         each letter in ["a","b","c","d","e","f","g","h"]
           td(class=letter)
+            div
 
 +makeTable('board')
 +makeTable('colors')
++makeTable('pieces')

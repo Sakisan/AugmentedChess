@@ -1,5 +1,11 @@
 @import "_css/variables";
 
+@font-face {
+  font-family: 'pgn4web ChessSansUsual';
+  src: url('chessfonts/ChessSansUsual.eot');
+  src: url('chessfonts/ChessSansUsual.woff') format('woff'), url('chessfonts/ChessSansUsual.ttf') format('truetype'), url('chessfonts/ChessSansUsual.svg#ChessSansUsual') format('svg');
+}
+
 table
   width 100%
   position absolute
@@ -36,3 +42,38 @@ td
 
 .dark 
   background $dark
+
+.black
+  color black
+  text-shadow: 0 0 $pieceGlow white
+
+.white
+  color white
+  text-shadow: 0 0 $pieceGlow black
+
+#pieces
+  font-family: 'pgn4web ChessSansUsual','pgn4web Liberation Sans',sans-serif;
+  font-size 8vw
+
+#pieces td div
+  width 0
+  height 0
+  margin -36% 0 0 18%
+
+#pieces .pawn div:before
+  content: 'p'
+
+#pieces .rook div:before
+  content: 'R'
+
+#pieces .knight div:before
+  content: 'N'
+
+#pieces .bishop div:before
+  content: 'B'
+
+#pieces .queen div:before
+  content: 'Q'
+
+#pieces .king div:before
+  content: 'K'

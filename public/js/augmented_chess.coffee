@@ -1,20 +1,18 @@
 # CoffeeScript
 (($) ->
   test = ->
-    format_cells('#colors .row1 td', 'white3')
-    format_cells('#colors .row2 td', 'white2')
-    format_cells('#colors .row3 td', 'white1')
-    format_cells('#colors .row6 td', 'black1')
-    format_cells('#colors .row7 td', 'black2')
-    format_cells('#colors .row8 td', 'black3')
+    style_cells('#pieces .7 td', 'black pawn')
+    style_cells('#pieces .2 td', 'white pawn')
 
   $(document).ready ->
-    resize()
-    format_cells('#board tr:even td:odd', 'dark')
-    format_cells('#board tr:even td:even', 'light')
-    format_cells('#board tr:odd td:even', 'dark')
-    format_cells('#board tr:odd td:odd', 'light')
+    style_cells('#board tr:even td:odd', 'dark')
+    style_cells('#board tr:even td:even', 'light')
+    style_cells('#board tr:odd td:even', 'dark')
+    style_cells('#board tr:odd td:odd', 'light')
     test()
+    resize()
+    resize()
+
   $(window).resize ->
     resize()
 
@@ -22,8 +20,12 @@
     cells = $('td')
     $(cell).height($(cell).width()) for cell in cells
 
-  format_cells = (s, c) ->
+  # s = the jquery selector
+  # c = the class to add
+  style_cells = (s, c) ->
     cells = $(s)
     $(cell).addClass(c) for cell in cells
+
+
 
 ) jQuery
