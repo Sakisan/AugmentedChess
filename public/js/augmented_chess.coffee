@@ -6,18 +6,18 @@
   colorizer[piece] = piece for piece in all_pieces
 
   fen_to_piece = {}
-  fen_to_piece['p'] = 'white pawn'
-  fen_to_piece['r'] = 'white rook'
-  fen_to_piece['n'] = 'white knight'
-  fen_to_piece['b'] = 'white bishop'
-  fen_to_piece['q'] = 'white queen'
-  fen_to_piece['k'] = 'white king'
-  fen_to_piece['P'] = 'black pawn'
-  fen_to_piece['R'] = 'black rook'
-  fen_to_piece['N'] = 'black knight'
-  fen_to_piece['B'] = 'black bishop'
-  fen_to_piece['Q'] = 'black queen'
-  fen_to_piece['K'] = 'black king'
+  fen_to_piece['p'] = 'black pawn'
+  fen_to_piece['r'] = 'black rook'
+  fen_to_piece['n'] = 'black knight'
+  fen_to_piece['b'] = 'black bishop'
+  fen_to_piece['q'] = 'black queen'
+  fen_to_piece['k'] = 'black king'
+  fen_to_piece['P'] = 'white pawn'
+  fen_to_piece['R'] = 'white rook'
+  fen_to_piece['N'] = 'white knight'
+  fen_to_piece['B'] = 'white bishop'
+  fen_to_piece['Q'] = 'white queen'
+  fen_to_piece['K'] = 'white king'
   fen_to_piece['-'] = 'no_piece'
 
   $(document).ready ->
@@ -47,6 +47,8 @@
 
   remove_all_pieces = ->
     unstyle_cells('.'+piece, piece) for piece in all_pieces
+    unstyle_cells('.white', 'white')
+    unstyle_cells('.black', 'black')
     $('#colors').find('input').each ->
       $(this).val(0)
     '?'
@@ -60,7 +62,7 @@
     remove_all_pieces()
     fen_parts = fen.replace(/^\s*/, "").replace(/\s*$/, "").split(/\/|\s/)
     for j in [1..8]
-      row = fen_parts[j-1].replace(/\d/g, replaceNumberWithDashes)
+      row = fen_parts[8-j].replace(/\d/g, replaceNumberWithDashes)
       for i in [1..8]
         style_cells('#pieces .'+j+' .'+s('abcdefgh',i-1), fen_to_piece[s(row, i-1)]) 
     colorize()
