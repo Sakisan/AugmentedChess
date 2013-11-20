@@ -5,7 +5,8 @@ mixin makeTable(id)
         each letter in ["a","b","c","d","e","f","g","h"]
           td(class=letter)
             div
-            input(type='hidden')
+            input(type='hidden' class="white")
+            input(type='hidden' class="black")
 
 +makeTable('board')
 +makeTable('colors')

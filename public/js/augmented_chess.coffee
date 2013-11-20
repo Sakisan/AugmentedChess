@@ -18,10 +18,10 @@
   fen_to_piece['-'] = 'no_piece'
 
   $(document).ready ->
-    style_cells('#board tr:even td:odd, #pieces tr:even td:odd', 'darksquare')
-    style_cells('#board tr:even td:even, #pieces tr:even td:even', 'lightsquare')
-    style_cells('#board tr:odd td:even, #pieces tr:odd td:even', 'darksquare')
-    style_cells('#board tr:odd td:odd, #pieces tr:odd td:odd', 'lightsquare')
+    style('#board tr:even td:odd, #pieces tr:even td:odd', 'darksquare')
+    style('#board tr:even td:even, #pieces tr:even td:even', 'lightsquare')
+    style('#board tr:odd td:even, #pieces tr:odd td:even', 'darksquare')
+    style('#board tr:odd td:odd, #pieces tr:odd td:odd', 'lightsquare')
     load_fen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     resize()
 
@@ -34,19 +34,19 @@
 
   # s = the jquery selector
   # c = the class to add
-  style_cells = (s, c) ->
+  style = (s, c) ->
     cells = $(s)
     $(cell).addClass(c) for cell in cells
 
-  unstyle_cells = (s, c) ->
+  unstyle = (s, c) ->
     cells = $(s)
     $(cell).removeClass(c) for cell in cells
 
   remove_all_pieces = ->
-    unstyle_cells('.'+piece, piece) for piece in all_pieces
-    unstyle_cells('.white', 'white')
-    unstyle_cells('.black', 'black')
-    unstyle_cells('.pinned', 'pinned')
+    unstyle('td.'+piece, piece) for piece in all_pieces
+    unstyle('td.white', 'white')
+    unstyle('td.black', 'black')
+    unstyle('td.pinned', 'pinned')
     $('#colors').find('input').each ->
       $(this).val(0)
     '?'
@@ -62,7 +62,7 @@
     for j in [1..8]
       row = fen_parts[8-j].replace(/\d/g, replaceNumberWithDashes)
       for i in [1..8]
-        style_cells('#pieces .'+j+' .'+s('abcdefgh',i-1), fen_to_piece[s(row, i-1)])
+        style('#pieces .'+j+' .'+s('abcdefgh',i-1), fen_to_piece[s(row, i-1)])
     pinned_pieces()
     colorize()
 
@@ -88,21 +88,23 @@
     recolorize()
 
   recolorize = ->
-    unstyle_cells('.white1', 'white1')    
-    unstyle_cells('.white2', 'white2')   
-    unstyle_cells('.white3', 'white3')   
-    unstyle_cells('.black1', 'black1')   
-    unstyle_cells('.black2', 'black2')   
-    unstyle_cells('.black3', 'black3')
+    unstyle('td.white1', 'white1')    
+    unstyle('td.white2', 'white2')   
+    unstyle('td.white3', 'white3')   
+    unstyle('td.black1', 'black1')   
+    unstyle('td.black2', 'black2')   
+    unstyle('td.black3', 'black3')
     for i in [1..8]
       for j in [1..8]
         a = s('abcdefgh',j-1)
         cell = $('#colors .'+i+' .'+a)
-        value = cell.find('input').val()
+        value_white = cell.find('input.white').val()
+        value_black = cell.find('input.black').val()
+        value = parseInt(value_white) - parseInt(value_black)
         cell.addClass(valueColor(value))
-        if value is "0" and get_piece_on(a,i) != 'no_piece'
+        if value is 0 and get_piece_on(a,i) != 'no_piece'
           console.log("unprotected")
-          style_cells('#pieces .'+i+' .'+a,'unprotected')
+          style('#pieces .'+i+' td.'+a,'unprotected')
 
 
   valueColor = (x) ->
@@ -176,9 +178,10 @@
   plus_one = (a,i,white) ->
     a = s('abcdefgh',a-1)
     cell = $('#colors .'+i+' .'+a)
-    input = cell.find('input')
+    color = if white then "white" else "black"
+    input = cell.find('input.'+color)
     cell_value = input.val()
-    if white then cell_value++ else cell_value--
+    cell_value++
     input.val(cell_value)
 
   straight_plus = (x, i, dx, di, white) ->
@@ -263,7 +266,7 @@
           pin(pin_a, pin_i)
 
   pin = (a,i) -> 
-    style_cells('#pieces .'+i+' .'+ a, 'pinned')
+    style('#pieces .'+i+' td.'+ a, 'pinned')
 
   fen_input = $('input#FEN')
   fen_input.keypress (e) ->
