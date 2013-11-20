@@ -2,9 +2,6 @@
 (($) ->
   all_pieces = ['pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'no_piece']
 
-  colorizer = {}
-  colorizer[piece] = piece for piece in all_pieces
-
   fen_to_piece = {}
   fen_to_piece['p'] = 'black pawn'
   fen_to_piece['r'] = 'black rook'
@@ -49,6 +46,7 @@
     unstyle_cells('.'+piece, piece) for piece in all_pieces
     unstyle_cells('.white', 'white')
     unstyle_cells('.black', 'black')
+    unstyle_cells('.pinned', 'pinned')
     $('#colors').find('input').each ->
       $(this).val(0)
     '?'
@@ -64,7 +62,8 @@
     for j in [1..8]
       row = fen_parts[8-j].replace(/\d/g, replaceNumberWithDashes)
       for i in [1..8]
-        style_cells('#pieces .'+j+' .'+s('abcdefgh',i-1), fen_to_piece[s(row, i-1)]) 
+        style_cells('#pieces .'+j+' .'+s('abcdefgh',i-1), fen_to_piece[s(row, i-1)])
+    pinned_pieces()
     colorize()
 
   replaceNumberWithDashes = (str) ->
@@ -80,11 +79,12 @@
       for j in [1..8]
         a = s('abcdefgh',j-1)
         cell = $('#pieces .'+i+' .'+a)  
-        piece = get_piece_on(a, i)      
-        white = cell.hasClass('white')
-        x = 'abcdefgh'.indexOf(a)+1
-        console.log(colorizer[piece]+'('+x+','+ i+','+ white+')')
-        eval(colorizer[piece]+'('+x+','+ i+','+ white+')')
+        pinned = cell.hasClass('pinned')
+        if not pinned
+          piece = get_piece_on(a, i)      
+          white = cell.hasClass('white')
+          x = 'abcdefgh'.indexOf(a)+1
+          eval(piece+'('+x+','+ i+','+ white+')')
     recolorize()
 
   recolorize = ->
@@ -100,6 +100,10 @@
         cell = $('#colors .'+i+' .'+a)
         value = cell.find('input').val()
         cell.addClass(valueColor(value))
+        if value is "0" and get_piece_on(a,i) != 'no_piece'
+          console.log("unprotected")
+          style_cells('#pieces .'+i+' .'+a,'unprotected')
+
 
   valueColor = (x) ->
     color = ''
@@ -164,7 +168,7 @@
   king = (x,i,white) ->
     for q in [-1..1]
       for k in [-1..1]
-        plus_one(x+q,i+k, white) if valid_xy(x+q, i+k) && !(q == 0 && k ==0)
+        plus_one(x+q,i+k, white) if valid_xy(x+q, i+k) and !(q == 0 and k ==0)
 
   no_piece = (a,i,white) ->
     ''
@@ -183,10 +187,83 @@
       x+=dx
       i+=di
       plus_one(x,i, white)
-      one_more = valid_xy(x+dx, i+di) && get_piece_on(s('abcdefgh',x-1), i) == 'no_piece' 
+      one_more = valid_xy(x+dx, i+di) and continue_straight(s('abcdefgh',x-1),i, white)
+
+  continue_straight = (a, i, white) ->
+    piece = get_piece_on(a, i)   
+    result = true
+    if piece == 'king'
+      cell = $('#pieces .'+i+' .'+a)     
+      white_king = cell.hasClass('white')
+      result = (white_king and !white) or (!white_king and white)
+    else result = piece == 'no_piece'
+    result
 
   valid_xy = (x,y) ->
-    x >= 1 && x <= 8 && y >= 1 && y <= 8
+    x >= 1 and x <= 8 and y >= 1 and y <= 8
+
+  getLetter = (cell) ->
+    a = ""
+    letters = ["a","b","c","d","e","f","g","h"]
+    for letter in letters
+      a = letter if cell.hasClass(letter) 
+    a
+
+
+  getNumber = (cell) ->
+    i = ""
+    numbers = ["1","2","3","4","5","6","7","8"]
+    for number in numbers
+      i = number if cell.parent().hasClass(number)
+    i
+
+  pinned_pieces = ->
+    black_cell = $('td.black.king')
+    a = getLetter(black_cell)
+    i = getNumber(black_cell)
+    pinned_to_king(a,i, false)
+
+    white_cell = $('td.white.king')
+    a = getLetter(white_cell)
+    i = getNumber(white_cell)
+    pinned_to_king(a,i, true)
+
+  pinned_to_king = (a,i, white) ->
+    x = 'abcdefgh'.indexOf(a)+1
+    i = parseInt(i)
+    straight_pin(x, i, 1, 0, white, "rook")  
+    straight_pin(x, i, -1, 0, white, "rook") 
+    straight_pin(x, i, 0, 1, white, "rook") 
+    straight_pin(x, i, 0, -1, white, "rook")  
+    straight_pin(x, i, 1, 1, white, "bishop")  
+    straight_pin(x, i, -1, 1, white, "bishop") 
+    straight_pin(x, i, 1, -1, white, "bishop") 
+    straight_pin(x, i, -1, -1, white, "bishop")
+
+  straight_pin = (x, i, dx, di, white_target, piece) ->
+    second = 0
+    one_more = valid_xy(x+dx, i+di)
+    while one_more
+      x+=dx
+      i+=di
+      if !continue_straight(s('abcdefgh',x-1),i, white_target)
+        second++
+        if second is 1
+          pin_a = s('abcdefgh',x-1)
+          pin_i = i
+
+      one_more = valid_xy(x+dx, i+di) and second < 2
+
+    if second is 2
+      attacker = get_piece_on(s('abcdefgh',x-1),i)
+      if attacker is piece or attacker is 'queen'
+        cell = $('#pieces .'+i+' .'+s('abcdefgh',x-1))     
+        white_attacker = cell.hasClass('white')
+        if (white_attacker and !white_target) or (!white_attacker and white_target)
+          pin(pin_a, pin_i)
+
+  pin = (a,i) -> 
+    style_cells('#pieces .'+i+' .'+ a, 'pinned')
 
   fen_input = $('input#FEN')
   fen_input.keypress (e) ->
