@@ -30,7 +30,8 @@
 
   resize = ->
     cells = $('td')
-    $(cell).height($(cell).width()) for cell in cells
+    #$(cell).height($(cell).width()) for cell in cells
+    $(cell).width($(cell).height()) for cell in cells
 
   # s = the jquery selector
   # c = the class to add
