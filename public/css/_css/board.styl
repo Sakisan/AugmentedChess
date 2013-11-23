@@ -1,0 +1,85 @@
+
+table
+//  width 100%
+  height 100%
+  position absolute
+  top 0
+  left 0
+
+table#colors
+  opacity $colorsOpacity
+
+td
+  border 1px solid black
+  text-align center
+
+#colors .white1
+  background-color lighten($white, $one)
+
+#colors .white2
+  background-color lighten($white, $two)
+
+#colors .white3
+  background-color lighten($white, $three)
+
+#colors .black1
+  background-color lighten($black, $one)
+
+#colors .black2
+  background-color lighten($black, $two)
+
+#colors .black3
+  background-color lighten($black, $three)
+
+#pieces .unprotected
+  background-color $unprotected
+
+#board .lightsquare
+  background $light
+
+#board .darksquare
+  background $light
+  //background $dark
+
+#pieces .black
+  color $blackPiece
+
+#pieces .white
+  color $whitePiece
+
+#pieces .darksquare.bishop
+  text-decoration underline
+
+#pieces .pinned.white
+  color $whitePinned
+
+#pieces .pinned.black
+  color $blackPinned
+
+#pieces
+  font-family: 'pgn4web ChessSansUsual','pgn4web Liberation Sans',sans-serif;
+  font-size 8vh
+//  font-size 8vh
+
+#pieces td div
+  width 0
+  height 0
+  margin -36% 0 0 18%
+
+#pieces .pawn div:before
+  content: 'p'
+
+#pieces .rook div:before
+  content: 'R'
+
+#pieces .knight div:before
+  content: 'N'
+
+#pieces .bishop div:before
+  content: 'B'
+
+#pieces .queen div:before
+  content: 'Q'
+
+#pieces .king div:before
+  content: 'K'

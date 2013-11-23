@@ -3,13 +3,14 @@ html(lang="en")
   head
     title= title
     meta(charset='utf-8')
+    link(type="text/css", rel="stylesheet", href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css")
     link(type="text/css", rel="stylesheet", href="/css/main.css")
 
   body
-    .wrapper
-      .main
-        .well
-          != yield
+    //.wrapper
+      //.main
+        //.well
+    != yield
 
     script(src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js")
     script(src="js/augmented_chess.js")
