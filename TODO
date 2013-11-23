@@ -1,0 +1,11 @@
+TODO
+
+1) test generate_fen
+
+2) finish coding the moving_pieces part
+
+3) test moving_pieces
+
+4) keep a history of FENs
+
+5) make navigation buttons & test

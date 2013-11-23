@@ -51,7 +51,6 @@
     $('#colors').find('input').each ->
       $(this).val(0)
     '?'
-       
 
   load_fen = (fen) ->
     pattern = /\s*([rnbqkpRNBQKP12345678]+\/){7}([rnbqkpRNBQKP12345678]+)\s[bw-]\s(([kqKQ]{1,4})|(-))\s(([a-h][1-8])|(-))\s\d+\s\d+\s*/;
@@ -71,6 +70,9 @@
     new_str = ''
     new_str+='-' for i in [1..parseInt(str)]
     new_str
+
+  replaceDashesWithNumbers = (fen) ->
+
 
   s = (str, i) ->
     str.substr(i,1)
@@ -273,6 +275,95 @@
   fen_input.keypress (e) ->
     if e.which is 13
       load_fen(fen_input.val())
+
+  generate_fen = ->
+    fen = ''
+    # pieces
+    for y in [0..7]
+      i = 8 - i
+      for x in [0..7]
+        a = s("abcdefgh", x)
+          fen+=piece_to_fen(a, i)
+      fen += '/'
+    fen = replaceDashesWithNumbers(fen)
+    # whose turn to play
+    fen += ' '+turn
+    # castling rights
+    # don't care about this yet
+    fen += ' -'
+    # En passant
+    # don't care about this yet
+    fen += ' -'    
+    # halfmove clock
+    # don't care about this yet
+    fen += ' 1'    
+    # fullmove number
+    # don't care about this yet
+    fen += ' 1'    
+    fen
+
+  piece_to_fen = (a, i) ->
+    fen = ''
+    cell = $('#pieces .'+i+' td.'+a)
+    if(cell.hasClass('no_piece'))
+      fen = '-'
+    else 
+      if cell.hasClass('rook')
+        fen = "r"
+      if cell.hasClass('knight')
+        fen = "k"
+      if cell.hasClass('bishop')
+        fen = "b"
+      if cell.hasClass('queen')
+        fen = "q"
+      if cell.hasClass('king')
+        fen = "k"
+      if cell.hasClass('pawn')
+        fen = "p"
+      if cell.hasClass('white')
+        fen = fen.toUpperCase
+    fen
+
+  # Moving the pieces
+
+  moving_a_piece = false
+  moving_cell = null
+  turn = 'w'
+
+  $('#pieces td').click ->
+    if not moving_a_piece
+      letter = getLetter(this)
+      number = getNumber(this)
+      piece = get_piece_on(letter, number)
+      if piece != "no_piece" and !$(this).hasClass("pinned")
+        color = if $(this).hasClass("white") then 'w' else 'b'
+        x = "abcdefgh".indexOf(letter)+1
+        eval("move_"+piece+"("+letter+","+number+","+(color is 'w')+")")
+        moving_a_piece = true
+        moving_cell = this
+    else #moving a piece
+      if $(this).hasClass("destination")
+        # remove piece on moving_cell 
+        # remove piece on destination
+        # place piece on destination
+        # recalculate FEN
+        # load FEN
+        # remove all .destination
+
+  move_pawn = (x,i, white) ->
+    # we clicked on the pawn on (x,i)
+    # if white then this is a white pawn 
+    # add .destination to all possible destination cells
+
+  move_rook = (x,i, white) ->
+
+  move_knight = (x,i, white) ->
+
+  move_bishop = (x,i, white) ->
+
+  move_queen = (x,i, white) ->
+
+  move_king = (x,i, white) ->
 
   the_end = 'end'
 ) jQuery
