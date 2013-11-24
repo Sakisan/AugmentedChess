@@ -104,7 +104,6 @@
         value = parseInt(value_white) - parseInt(value_black)
         cell.addClass(valueColor(value))
         if value is 0 and get_piece_on(a,i) != 'no_piece'
-          console.log("unprotected")
           style('#pieces .'+i+' td.'+a,'unprotected')
 
 
