@@ -10,7 +10,7 @@ table#colors
   opacity $colorsOpacity
 
 td
-  border 1px solid black
+  border 1px solid $border
   text-align center
 
 #board .lightsquare
@@ -20,6 +20,10 @@ td
   //background $light
   //background $dark
   background-image url("../img/marble2.png")
+  background-size 100%
+
+#colors td
+  background-color $light
 
 #colors .white1
   background-color lighten($white, $one)
