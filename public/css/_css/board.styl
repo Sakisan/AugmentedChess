@@ -13,6 +13,14 @@ td
   border 1px solid black
   text-align center
 
+#board .lightsquare
+  background $light
+
+#board .darksquare
+  //background $light
+  //background $dark
+  background-image url("../img/marble2.png")
+
 #colors .white1
   background-color lighten($white, $one)
 
@@ -33,13 +41,6 @@ td
 
 #pieces .unprotected
   background-color $unprotected
-
-#board .lightsquare
-  background $light
-
-#board .darksquare
-  background $light
-  //background $dark
 
 #pieces .black
   color $blackPiece
