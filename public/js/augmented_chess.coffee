@@ -70,13 +70,24 @@
     colorize()
     test()
 
+  # str is a number in string format
   replaceNumberWithDashes = (str) ->
     new_str = ''
     new_str+='-' for i in [1..parseInt(str)]
     new_str
 
   replaceDashesWithNumbers = (fen) ->
-
+    replaced = ''
+    n = 0
+    for i in [0..fen.length]
+      if s(fen, i) == '-'
+        n++
+      else
+        if n > 0
+          replaced += n
+          n = 0
+        replaced += s(fen, i)
+    replaced
 
   s = (str, i) ->
     str.substr(i,1)
@@ -283,7 +294,7 @@
     fen = ''
     # pieces
     for y in [0..7]
-      i = 8 - i
+      i = 8 - y
       for x in [0..7]
         a = s("abcdefgh", x)
         fen+=piece_to_fen(a, i)
@@ -324,7 +335,7 @@
       if cell.hasClass('pawn')
         fen = "p"
       if cell.hasClass('white')
-        fen = fen.toUpperCase
+        fen = fen.toUpperCase()
     fen
 
   # Moving the pieces
