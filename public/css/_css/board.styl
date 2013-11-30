@@ -10,7 +10,7 @@ table#colors
   opacity $colorsOpacity
 
 td
-  border 1px solid $border
+  border $borderWidth solid $borderColor
   text-align center
 
 #board .lightsquare
@@ -60,6 +60,9 @@ td
 
 #pieces .pinned.black
   color $blackPinned
+
+#pieces .moving
+  color red
 
 #pieces
   font-family: 'pgn4web ChessSansUsual','pgn4web Liberation Sans',sans-serif;

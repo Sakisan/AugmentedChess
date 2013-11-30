@@ -1,7 +1,5 @@
 # CoffeeScript
 (($) ->
-  test = ->
-    $('#test').val(generate_fen())
 
   all_pieces = ['pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'no_piece']
 
@@ -51,9 +49,13 @@
     unstyle('td.white', 'white')
     unstyle('td.black', 'black')
     unstyle('td.pinned', 'pinned')
+    unstyle('td.unprotected', 'unprotected')
     $('#colors').find('input').each ->
       $(this).val(0)
     '?'
+
+  $('#reset').click ->
+    load_fen()
 
   load_fen = (fen) ->
     pattern = /\s*([rnbqkpRNBQKP12345678]+\/){7}([rnbqkpRNBQKP12345678]+)\s[bw-]\s(([kqKQ]{1,4})|(-))\s(([a-h][1-8])|(-))\s\d+\s\d+\s*/
@@ -68,7 +70,7 @@
         style('#pieces .'+j+' .'+s('abcdefgh',i-1), fen_to_piece[s(row, i-1)])
     pinned_pieces()
     colorize()
-    test()
+    $('#FEN').val(generate_fen())
 
   # str is a number in string format
   replaceNumberWithDashes = (str) ->
@@ -226,7 +228,7 @@
     a = ""
     letters = ["a","b","c","d","e","f","g","h"]
     for letter in letters
-      a = letter if cell.hasClass(letter)
+      a = letter if $(cell).hasClass(letter)
     a
 
 
@@ -234,7 +236,7 @@
     i = ""
     numbers = ["1","2","3","4","5","6","7","8"]
     for number in numbers
-      i = number if cell.parent().hasClass(number)
+      i = number if $(cell).parent().hasClass(number)
     i
 
   pinned_pieces = ->
@@ -298,10 +300,11 @@
       for x in [0..7]
         a = s("abcdefgh", x)
         fen+=piece_to_fen(a, i)
-      fen += '/'
+      fen += '/' if i != 1
     fen = replaceDashesWithNumbers(fen)
     # whose turn to play
-    fen += ' '+turn
+    # don't care about this yet
+    fen += ' w'
     # castling rights
     # don't care about this yet
     fen += ' -'
@@ -325,7 +328,7 @@
       if cell.hasClass('rook')
         fen = "r"
       if cell.hasClass('knight')
-        fen = "k"
+        fen = "n"
       if cell.hasClass('bishop')
         fen = "b"
       if cell.hasClass('queen')
@@ -342,43 +345,43 @@
 
   moving_a_piece = false
   moving_cell = null
-  turn = 'w'
 
   $('#pieces td').click ->
     if not moving_a_piece
       letter = getLetter(this)
       number = getNumber(this)
-      piece = get_piece_on(letter, number)
+      piece = get_piece_on(letter,number)
       if piece != "no_piece" and !$(this).hasClass("pinned")
-        color = if $(this).hasClass("white") then 'w' else 'b'
         x = "abcdefgh".indexOf(letter)+1
-        eval("move_"+piece+"("+letter+","+number+","+(color is 'w')+")")
+        $(this).addClass("moving")
         moving_a_piece = true
-        moving_cell = this
+        moving_cell = $(this)
     else #moving a piece
-      if $(this).hasClass("destination")
-        buh = "buh"
-        # remove piece on moving_cell
-        # remove piece on destination
-        # place piece on destination
-        # recalculate FEN
-        # load FEN
-        # remove all .destination
+      if $(this).hasClass("moving")
+        $(this).removeClass("moving")
+        moving_a_piece = false
+      else
+        destination = $(this)
+        moving_letter = getLetter(moving_cell)
+        moving_number = getNumber(moving_cell)
+        piece = get_piece_on(moving_letter, moving_number)
+        color = if $(moving_cell).hasClass("white") then 'white' else 'black'
+        remove_piece_on(moving_cell)
+        moving_cell.addClass('no_piece')
+        remove_piece_on(destination)
+        destination.addClass(piece)
+        destination.addClass(color)
+        console.log(generate_fen())
+        load_fen(generate_fen())
+        moving_cell.removeClass('moving')
+        moving_a_piece = false
 
-  move_pawn = (x,i, white) ->
-    # we clicked on the pawn on (x,i)
-    # if white then this is a white pawn
-    # add .destination to all possible destination cells
-
-  move_rook = (x,i, white) ->
-
-  move_knight = (x,i, white) ->
-
-  move_bishop = (x,i, white) ->
-
-  move_queen = (x,i, white) ->
-
-  move_king = (x,i, white) ->
+  remove_piece_on = (cell) ->
+    cell.removeClass(piece) for piece in all_pieces
+    cell.removeClass('white')
+    cell.removeClass('black')
+    cell.removeClass('pinned')
+    cell.removeClass('unprotected')
 
   the_end = 'end'
 ) jQuery
