@@ -1,5 +1,8 @@
 # CoffeeScript
 (($) ->
+  test = ->
+    $('#test').val(generate_fen())
+
   all_pieces = ['pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'no_piece']
 
   fen_to_piece = {}
@@ -53,7 +56,7 @@
     '?'
 
   load_fen = (fen) ->
-    pattern = /\s*([rnbqkpRNBQKP12345678]+\/){7}([rnbqkpRNBQKP12345678]+)\s[bw-]\s(([kqKQ]{1,4})|(-))\s(([a-h][1-8])|(-))\s\d+\s\d+\s*/;
+    pattern = /\s*([rnbqkpRNBQKP12345678]+\/){7}([rnbqkpRNBQKP12345678]+)\s[bw-]\s(([kqKQ]{1,4})|(-))\s(([a-h][1-8])|(-))\s\d+\s\d+\s*/
     if !pattern.test(fen)
       fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
@@ -65,6 +68,7 @@
         style('#pieces .'+j+' .'+s('abcdefgh',i-1), fen_to_piece[s(row, i-1)])
     pinned_pieces()
     colorize()
+    test()
 
   replaceNumberWithDashes = (str) ->
     new_str = ''
@@ -81,21 +85,21 @@
     for i in [1..8]
       for j in [1..8]
         a = s('abcdefgh',j-1)
-        cell = $('#pieces .'+i+' .'+a)  
+        cell = $('#pieces .'+i+' .'+a)
         pinned = cell.hasClass('pinned')
         if not pinned
-          piece = get_piece_on(a, i)      
+          piece = get_piece_on(a, i)
           white = cell.hasClass('white')
           x = 'abcdefgh'.indexOf(a)+1
           eval(piece+'('+x+','+ i+','+ white+')')
     recolorize()
 
   recolorize = ->
-    unstyle('td.white1', 'white1')    
-    unstyle('td.white2', 'white2')   
-    unstyle('td.white3', 'white3')   
-    unstyle('td.black1', 'black1')   
-    unstyle('td.black2', 'black2')   
+    unstyle('td.white1', 'white1')
+    unstyle('td.white2', 'white2')
+    unstyle('td.white3', 'white3')
+    unstyle('td.black1', 'black1')
+    unstyle('td.black2', 'black2')
     unstyle('td.black3', 'black3')
     for i in [1..8]
       for j in [1..8]
@@ -127,12 +131,12 @@
     color
 
   get_piece_on = (a, i) ->
-    cell = $('#pieces .'+i+' .'+a)  
+    cell = $('#pieces .'+i+' .'+a)
     myPiece = 'no_piece'
     for piece in all_pieces
       if cell.hasClass(piece)
         myPiece = piece
-    myPiece  
+    myPiece
 
   pawn = (x,i, white) ->
     y = if white then 1 else -1
@@ -140,10 +144,10 @@
     plus_one(x+1,i+y, white) if x+1 <= 8
 
   rook = (x,i,white) ->
-    straight_plus(x, i, 1, 0, white)  
-    straight_plus(x, i, -1, 0, white) 
-    straight_plus(x, i, 0, 1, white) 
-    straight_plus(x, i, 0, -1, white)        
+    straight_plus(x, i, 1, 0, white)
+    straight_plus(x, i, -1, 0, white)
+    straight_plus(x, i, 0, 1, white)
+    straight_plus(x, i, 0, -1, white)
 
   knight = (x,i,white) ->
     for q in [-1,1]
@@ -154,20 +158,20 @@
         plus_one(x+q,i+k, white) if valid_xy(x+q, i+k)
 
   bishop = (x,i,white) ->
-    straight_plus(x, i, 1, 1, white)  
-    straight_plus(x, i, -1, 1, white) 
-    straight_plus(x, i, 1, -1, white) 
-    straight_plus(x, i, -1, -1, white) 
+    straight_plus(x, i, 1, 1, white)
+    straight_plus(x, i, -1, 1, white)
+    straight_plus(x, i, 1, -1, white)
+    straight_plus(x, i, -1, -1, white)
 
   queen = (x,i,white) ->
-    straight_plus(x, i, 1, 0, white)  
-    straight_plus(x, i, -1, 0, white) 
-    straight_plus(x, i, 0, 1, white) 
-    straight_plus(x, i, 0, -1, white)  
-    straight_plus(x, i, 1, 1, white)  
-    straight_plus(x, i, -1, 1, white) 
-    straight_plus(x, i, 1, -1, white) 
-    straight_plus(x, i, -1, -1, white)   
+    straight_plus(x, i, 1, 0, white)
+    straight_plus(x, i, -1, 0, white)
+    straight_plus(x, i, 0, 1, white)
+    straight_plus(x, i, 0, -1, white)
+    straight_plus(x, i, 1, 1, white)
+    straight_plus(x, i, -1, 1, white)
+    straight_plus(x, i, 1, -1, white)
+    straight_plus(x, i, -1, -1, white)
 
   king = (x,i,white) ->
     for q in [-1..1]
@@ -195,10 +199,10 @@
       one_more = valid_xy(x+dx, i+di) and continue_straight(s('abcdefgh',x-1),i, white)
 
   continue_straight = (a, i, white) ->
-    piece = get_piece_on(a, i)   
+    piece = get_piece_on(a, i)
     result = true
     if piece == 'king'
-      cell = $('#pieces .'+i+' .'+a)     
+      cell = $('#pieces .'+i+' .'+a)
       white_king = cell.hasClass('white')
       result = (white_king and !white) or (!white_king and white)
     else result = piece == 'no_piece'
@@ -211,7 +215,7 @@
     a = ""
     letters = ["a","b","c","d","e","f","g","h"]
     for letter in letters
-      a = letter if cell.hasClass(letter) 
+      a = letter if cell.hasClass(letter)
     a
 
 
@@ -236,13 +240,13 @@
   pinned_to_king = (a,i, white) ->
     x = 'abcdefgh'.indexOf(a)+1
     i = parseInt(i)
-    straight_pin(x, i, 1, 0, white, "rook")  
-    straight_pin(x, i, -1, 0, white, "rook") 
-    straight_pin(x, i, 0, 1, white, "rook") 
-    straight_pin(x, i, 0, -1, white, "rook")  
-    straight_pin(x, i, 1, 1, white, "bishop")  
-    straight_pin(x, i, -1, 1, white, "bishop") 
-    straight_pin(x, i, 1, -1, white, "bishop") 
+    straight_pin(x, i, 1, 0, white, "rook")
+    straight_pin(x, i, -1, 0, white, "rook")
+    straight_pin(x, i, 0, 1, white, "rook")
+    straight_pin(x, i, 0, -1, white, "rook")
+    straight_pin(x, i, 1, 1, white, "bishop")
+    straight_pin(x, i, -1, 1, white, "bishop")
+    straight_pin(x, i, 1, -1, white, "bishop")
     straight_pin(x, i, -1, -1, white, "bishop")
 
   straight_pin = (x, i, dx, di, white_target, piece) ->
@@ -262,12 +266,12 @@
     if second is 2
       attacker = get_piece_on(s('abcdefgh',x-1),i)
       if attacker is piece or attacker is 'queen'
-        cell = $('#pieces .'+i+' .'+s('abcdefgh',x-1))     
+        cell = $('#pieces .'+i+' .'+s('abcdefgh',x-1))
         white_attacker = cell.hasClass('white')
         if (white_attacker and !white_target) or (!white_attacker and white_target)
           pin(pin_a, pin_i)
 
-  pin = (a,i) -> 
+  pin = (a,i) ->
     style('#pieces .'+i+' td.'+ a, 'pinned')
 
   fen_input = $('input#FEN')
@@ -282,7 +286,7 @@
       i = 8 - i
       for x in [0..7]
         a = s("abcdefgh", x)
-          fen+=piece_to_fen(a, i)
+        fen+=piece_to_fen(a, i)
       fen += '/'
     fen = replaceDashesWithNumbers(fen)
     # whose turn to play
@@ -292,13 +296,13 @@
     fen += ' -'
     # En passant
     # don't care about this yet
-    fen += ' -'    
+    fen += ' -'
     # halfmove clock
     # don't care about this yet
-    fen += ' 1'    
+    fen += ' 1'
     # fullmove number
     # don't care about this yet
-    fen += ' 1'    
+    fen += ' 1'
     fen
 
   piece_to_fen = (a, i) ->
@@ -306,7 +310,7 @@
     cell = $('#pieces .'+i+' td.'+a)
     if(cell.hasClass('no_piece'))
       fen = '-'
-    else 
+    else
       if cell.hasClass('rook')
         fen = "r"
       if cell.hasClass('knight')
@@ -342,7 +346,8 @@
         moving_cell = this
     else #moving a piece
       if $(this).hasClass("destination")
-        # remove piece on moving_cell 
+        buh = "buh"
+        # remove piece on moving_cell
         # remove piece on destination
         # place piece on destination
         # recalculate FEN
@@ -351,7 +356,7 @@
 
   move_pawn = (x,i, white) ->
     # we clicked on the pawn on (x,i)
-    # if white then this is a white pawn 
+    # if white then this is a white pawn
     # add .destination to all possible destination cells
 
   move_rook = (x,i, white) ->

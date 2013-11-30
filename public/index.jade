@@ -14,7 +14,10 @@ mixin makeTable(id)
 
 #controls-wrapper
   #controls
+    label(for="FEN") FEN
     input.form-control(id="FEN" type='text' placeholder="Load FEN")
+    label(for="test") test
+    input.form-control(id="test" type='text' placeholder="test" disabled)
   #credits
     p 
       a(href="https://github.com/Sakisan/AugmentedChess") github
