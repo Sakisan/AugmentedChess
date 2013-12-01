@@ -427,7 +427,7 @@
     cell.removeClass('pinned')
     cell.removeClass('unprotected')
 
-  # preferences checkboxes
+  # preference checkboxes
   white_influence = $('#white_influence')
   black_influence = $('#black_influence')
   highlight_unprotected = $('#highlight_unprotected')
