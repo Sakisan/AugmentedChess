@@ -124,6 +124,7 @@
         cell.addClass(valueColor(value))
         if value is 0 and get_piece_on(a,i) != 'no_piece'
           style('#pieces .'+i+' td.'+a,'unprotected')
+          style('#colors .'+i+' td.'+a,'unprotected')
 
 
   valueColor = (x) ->
@@ -371,7 +372,6 @@
         remove_piece_on(destination)
         destination.addClass(piece)
         destination.addClass(color)
-        console.log(generate_fen())
         load_fen(generate_fen())
         moving_cell.removeClass('moving')
         moving_a_piece = false
