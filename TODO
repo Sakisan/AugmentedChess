@@ -1,3 +1,4 @@
 TODO
 
-choose next feature
+make a list of used classes
+and remove appropriate classes in remove_all_pieces()

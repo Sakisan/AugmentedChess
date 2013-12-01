@@ -140,7 +140,7 @@
       for j in [1..8]
         a = s('abcdefgh',j-1)
         cell = $('#pieces .'+i+' .'+a)
-        pinned = cell.hasClass('pinned')
+        pinned = cell.hasClass('pinned') or cell.hasClass('pinned-disabled')
         if not pinned
           piece = get_piece_on(a, i)
           white = cell.hasClass('white')
@@ -431,6 +431,7 @@
   white_influence = $('#white_influence')
   black_influence = $('#black_influence')
   highlight_unprotected = $('#highlight_unprotected')
+  highlight_pinned = $('#highlight_pinned')
 
   white_influence.change ->
     process_preferences()
@@ -439,6 +440,9 @@
     process_preferences()
 
   highlight_unprotected.change ->
+    process_preferences()
+
+  highlight_pinned.change ->
     process_preferences()
 
   process_preferences = ->
@@ -462,6 +466,10 @@
       disable_style('unprotected')
     else
       enable_style('unprotected')
+    if !highlight_pinned.is(':checked')
+      disable_style('pinned')
+    else
+      enable_style('pinned')
 
   the_end = 'end'
 ) jQuery
