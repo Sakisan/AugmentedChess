@@ -351,7 +351,7 @@
       letter = getLetter(this)
       number = getNumber(this)
       piece = get_piece_on(letter,number)
-      if piece != "no_piece" and !$(this).hasClass("pinned")
+      if piece != "no_piece" #and !$(this).hasClass("pinned")
         x = "abcdefgh".indexOf(letter)+1
         $(this).addClass("moving")
         moving_a_piece = true
