@@ -62,16 +62,18 @@
     load_fen()
 
   $('#back').click ->
-    fen = fen_back.pop()
-    fen_forward.push(current_fen)
-    current_fen = fen
-    load_fen_no_history(fen)
+    if(fen_back.length > 0)
+      fen = fen_back.pop()
+      fen_forward.push(current_fen)
+      current_fen = fen
+      load_fen_no_history(fen)
 
   $('#forward').click ->
-    fen = fen_forward.pop()
-    fen_back.push(current_fen)
-    current_fen = fen
-    load_fen_no_history(fen)
+    if(fen_forward.length > 0)
+      fen = fen_forward.pop()
+      fen_back.push(current_fen)
+      current_fen = fen
+      load_fen_no_history(fen)
 
   load_fen = (fen) ->
     load_fen_no_history(fen)    
