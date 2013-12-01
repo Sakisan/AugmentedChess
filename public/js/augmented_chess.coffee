@@ -54,10 +54,31 @@
       $(this).val(0)
     '?'
 
+  current_fen = "";
+  fen_back = new Array
+  fen_forward = new Array
+
   $('#reset').click ->
     load_fen()
 
+  $('#back').click ->
+    fen = fen_back.pop()
+    fen_forward.push(current_fen)
+    current_fen = fen
+    load_fen_no_history(fen)
+
+  $('#forward').click ->
+    fen = fen_forward.pop()
+    fen_back.push(current_fen)
+    current_fen = fen
+    load_fen_no_history(fen)
+
   load_fen = (fen) ->
+    load_fen_no_history(fen)    
+    fen_back.push(current_fen)
+    current_fen = fen
+
+  load_fen_no_history = (fen) ->
     pattern = /\s*([rnbqkpRNBQKP12345678]+\/){7}([rnbqkpRNBQKP12345678]+)\s[bw-]\s(([kqKQ]{1,4})|(-))\s(([a-h][1-8])|(-))\s\d+\s\d+\s*/
     if !pattern.test(fen)
       fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"

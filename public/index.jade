@@ -17,6 +17,10 @@ mixin makeTable(id)
     div.form-group
       label(for="FEN") FEN
       input.form-control(id="FEN" type='text' placeholder="Load FEN")
+    button.btn.btn-default(id="back")
+      span.glyphicon.glyphicon-chevron-left
+    button.btn.btn-default(id="forward")
+      span.glyphicon.glyphicon-chevron-right
     button.btn(id="reset") Reset
   #credits
     p 
