@@ -44,6 +44,23 @@
     cells = $(s)
     $(cell).removeClass(c) for cell in cells
 
+  disable_style = (c) ->
+    cells = $('td.'+c)
+    i = c.indexOf('-disabled')
+    if i < 0
+      for cell in cells
+        $(cell).removeClass(c)
+        $(cell).addClass(c+'-disabled')
+
+  enable_style = (c) ->
+    c = c+'-disabled'
+    cells = $('td.'+c)
+    i = c.indexOf('-disabled')
+    if i > 0
+      for cell in cells
+        $(cell).removeClass(c)
+        $(cell).addClass(c.substr(0,i))
+
   remove_all_pieces = ->
     unstyle('td.'+piece, piece) for piece in all_pieces
     unstyle('td.white', 'white')
@@ -54,7 +71,7 @@
       $(this).val(0)
     '?'
 
-  current_fen = "";
+  current_fen = ""
   fen_back = new Array
   fen_forward = new Array
 
@@ -76,7 +93,7 @@
       load_fen_no_history(fen)
 
   load_fen = (fen) ->
-    load_fen_no_history(fen)    
+    load_fen_no_history(fen)
     fen_back.push(current_fen)
     current_fen = fen
 
@@ -94,6 +111,7 @@
     pinned_pieces()
     colorize()
     $('#FEN').val(generate_fen())
+    process_preferences()
 
   # str is a number in string format
   replaceNumberWithDashes = (str) ->
@@ -233,7 +251,8 @@
       x+=dx
       i+=di
       plus_one(x,i, white)
-      one_more = valid_xy(x+dx, i+di) and continue_straight(s('abcdefgh',x-1),i, white)
+      a = s('abcdefgh',x-1)
+      one_more = valid_xy(x+dx, i+di) and continue_straight(a,i, white)
 
   continue_straight = (a, i, white) ->
     piece = get_piece_on(a, i)
@@ -305,7 +324,9 @@
       if attacker is piece or attacker is 'queen'
         cell = $('#pieces .'+i+' .'+s('abcdefgh',x-1))
         white_attacker = cell.hasClass('white')
-        if (white_attacker and !white_target) or (!white_attacker and white_target)
+        if white_attacker ^ white_target
+          # (white_attacker and !white_target)
+          # or (!white_attacker and white_target)
           pin(pin_a, pin_i)
 
   pin = (a,i) ->
@@ -405,6 +426,42 @@
     cell.removeClass('black')
     cell.removeClass('pinned')
     cell.removeClass('unprotected')
+
+  # preferences checkboxes
+  white_influence = $('#white_influence')
+  black_influence = $('#black_influence')
+  highlight_unprotected = $('#highlight_unprotected')
+
+  white_influence.change ->
+    process_preferences()
+
+  black_influence.change ->
+    process_preferences()
+
+  highlight_unprotected.change ->
+    process_preferences()
+
+  process_preferences = ->
+    if !white_influence.is(':checked')
+      disable_style('white1')
+      disable_style('white2')
+      disable_style('white3')
+    else
+      enable_style('white1')
+      enable_style('white2')
+      enable_style('white3')
+    if !black_influence.is(':checked')
+      disable_style('black1')
+      disable_style('black2')
+      disable_style('black3')
+    else
+      enable_style('black1')
+      enable_style('black2')
+      enable_style('black3')
+    if !highlight_unprotected.is(':checked')
+      disable_style('unprotected')
+    else
+      enable_style('unprotected')
 
   the_end = 'end'
 ) jQuery

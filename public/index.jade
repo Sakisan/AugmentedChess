@@ -22,6 +22,15 @@ mixin makeTable(id)
     button.btn.btn-default(id="forward")
       span.glyphicon.glyphicon-chevron-right
     button.btn(id="reset") Reset
+    div.checkbox
+      input(type="checkbox" id="white_influence" checked) 
+      label(for="white_influence") White's influence
+    div.checkbox
+      input(type="checkbox" id="black_influence" checked)
+      label(for="black_influence") Blacks's influence
+    div.checkbox
+      input(type="checkbox" id="highlight_unprotected" checked)
+      label(for="highlight_unprotected") Highlight unprotected pieces
   #credits
     p 
       a(href="https://github.com/Sakisan/AugmentedChess") github
