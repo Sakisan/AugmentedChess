@@ -433,16 +433,19 @@
   highlight_pinned = $('#highlight_pinned')
 
   white_influence.change ->
-    process_preferences()
+    preference_change()
 
   black_influence.change ->
-    process_preferences()
+    preference_change()
 
   highlight_unprotected.change ->
-    process_preferences()
+    preference_change()
 
   highlight_pinned.change ->
-    process_preferences()
+    preference_change()
+
+  preference_change = ->
+    load_fen_no_history(current_fen)
 
   process_preferences = ->
     if !white_influence.is(':checked')
