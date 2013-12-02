@@ -437,6 +437,7 @@
   black_influence = $('#black_influence')
   highlight_unprotected = $('#highlight_unprotected')
   highlight_pinned = $('#highlight_pinned')
+  highlight_checks = $('#highlight_checks')
 
   white_influence.change ->
     preference_change()
@@ -448,6 +449,9 @@
     preference_change()
 
   highlight_pinned.change ->
+    preference_change()
+
+  highlight_checks.change ->
     preference_change()
 
   preference_change = ->
@@ -478,6 +482,10 @@
       disable_style('pinned')
     else
       enable_style('pinned')
+    if !highlight_checks.is(':checked')
+      disable_style('check')
+    else
+      enable_style('check')
 
   # List of saved FEN
 
