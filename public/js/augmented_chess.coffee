@@ -109,7 +109,7 @@
         style('#pieces .'+j+' .'+s('abcdefgh',i-1), fen_to_piece[s(row, i-1)])
     pinned_pieces()
     colorize()
-    $('#FEN').val(generate_fen())
+    fen_input.val(generate_fen())
     process_preferences()
 
   # str is a number in string format
@@ -469,6 +469,42 @@
       disable_style('pinned')
     else
       enable_style('pinned')
+
+  # List of saved FEN
+
+  list_saved = $('#saved')
+  save_name = $('#save_name')
+
+  $('#save').click ->
+    add_saved_fen(fen_input.val())
+
+  add_saved_fen = (fen) ->
+    n = 1
+    while list_saved.find('#fen_'+n).length
+      n++
+    span = $('<span id="fen_'+n+'">')
+    b = make_button(n)
+    a = make_link(fen)
+    span.append(a).append(b)
+    list_saved.append(span)
+    save_name.val('position '+n)
+
+  make_button = (n) ->
+    b = $('<button class="btn btn-default">')
+    i = $('<span class="glyphicon glyphicon-remove">')
+    b.append(i)
+    b.click ->
+      unsave(n)
+    b
+
+  make_link = (fen) ->
+    a = $('<a class="fen" target="'+fen+'">').append(save_name.val())
+    a.click ->
+      load_fen($(this).attr('target'))
+    a
+
+  unsave = (n) ->
+    list_saved.find('#fen_'+n).remove()
 
   the_end = 'end'
 ) jQuery

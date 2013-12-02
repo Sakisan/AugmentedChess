@@ -13,27 +13,35 @@ mixin makeTable(id)
 +makeTable('pieces')
 
 #controls-wrapper
-  #controls
-    div.form-group
+  #controls.container
+    .form-group
       label(for="FEN") FEN
       input.form-control(id="FEN" type='text' placeholder="Load FEN")
-    button.btn.btn-default(id="back")
-      span.glyphicon.glyphicon-chevron-left
-    button.btn.btn-default(id="forward")
-      span.glyphicon.glyphicon-chevron-right
-    button.btn(id="reset") Reset
-    div.checkbox
+    .form-group
+      button.btn.btn-default(id="reset") Reset 
+        span.glyphicon.glyphicon-step-backward
+      button.btn.btn-default(id="back")
+        span.glyphicon.glyphicon-chevron-left
+      button.btn.btn-default(id="forward")
+        span.glyphicon.glyphicon-chevron-right
+      button.btn.btn-default(id="save") Save
+      input.form-control(id="save_name" value="position 0")
+    .checkbox
       input(type="checkbox" id="white_influence") 
       label(for="white_influence") White's influence
-    div.checkbox
+    .checkbox
       input(type="checkbox" id="black_influence")
       label(for="black_influence") Black's influence
-    div.checkbox
+    .checkbox
       input(type="checkbox" id="highlight_unprotected")
       label(for="highlight_unprotected") Highlight unprotected pieces
-    div.checkbox
+    .checkbox
       input(type="checkbox" id="highlight_pinned")
       label(for="highlight_pinned") Highlight pinned pieces
+    #saved
+      p
+        label Your saved FEN
+      
   #credits
     p 
       a(href="https://github.com/Sakisan/AugmentedChess") github
