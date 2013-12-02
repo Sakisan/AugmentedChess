@@ -1,7 +1,7 @@
 # CoffeeScript
 (($) ->
 
-  all_pieces = ['pawn', 'rook', 'knight', 'bishop', 'queen', 'king', 'no_piece']
+  all_pieces = ['no_piece', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king']
 
   fen_to_piece = {}
   fen_to_piece['p'] = 'black pawn'
@@ -66,6 +66,7 @@
     unstyle('td.black', 'black')
     unstyle('td.pinned', 'pinned')
     unstyle('td.unprotected', 'unprotected')
+    unstyle('td.check', 'check')
     $('#colors').find('input').each ->
       $(this).val(0)
     '?'
@@ -107,8 +108,7 @@
       row = fen_parts[8-j].replace(/\d/g, replaceNumberWithDashes)
       for i in [1..8]
         style('#pieces .'+j+' .'+s('abcdefgh',i-1), fen_to_piece[s(row, i-1)])
-    pinned_pieces()
-    colorize()
+    analyse()
     fen_input.val(generate_fen())
     process_preferences()
 
@@ -134,7 +134,7 @@
   s = (str, i) ->
     str.substr(i,1)
 
-  colorize = ->
+  analyse = ->
     for i in [1..8]
       for j in [1..8]
         a = s('abcdefgh',j-1)
@@ -145,9 +145,10 @@
           white = cell.hasClass('white')
           x = 'abcdefgh'.indexOf(a)+1
           eval(piece+'('+x+','+ i+','+ white+')')
-    recolorize()
+    pinned_pieces()
+    colorize()
 
-  recolorize = ->
+  colorize = ->
     unstyle('td.white1', 'white1')
     unstyle('td.white2', 'white2')
     unstyle('td.white3', 'white3')
@@ -239,10 +240,15 @@
     a = s('abcdefgh',a-1)
     cell = $('#colors .'+i+' .'+a)
     color = if white then "white" else "black"
+    other_color = if white then "black" else "white"
     input = cell.find('input.'+color)
     cell_value = input.val()
     cell_value++
     input.val(cell_value)
+    if get_piece_on(a,i) is 'king'
+      piece_cell = $('#pieces .'+i+' .'+a)
+      if(piece_cell.hasClass(other_color))
+        piece_cell.addClass('check')
 
   straight_plus = (x, i, dx, di, white) ->
     one_more = valid_xy(x+dx, i+di)
