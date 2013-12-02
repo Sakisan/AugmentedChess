@@ -3,6 +3,15 @@
 
   all_pieces = ['no_piece', 'pawn', 'rook', 'knight', 'bishop', 'queen', 'king']
 
+  piece_values = {}
+  piece_values['no_piece'] = 0
+  piece_values['pawn'] = 0
+  piece_values['knight'] = 3
+  piece_values['bishop'] = 3
+  piece_values['rook'] = 5
+  piece_values['queen'] = 9
+  piece_values['king'] = 100
+
   fen_to_piece = {}
   fen_to_piece['p'] = 'black pawn'
   fen_to_piece['r'] = 'black rook'
@@ -232,7 +241,8 @@
   king = (x,i,white) ->
     for q in [-1..1]
       for k in [-1..1]
-        plus_one(x+q,i+k, white, 'king') if valid_xy(x+q, i+k) and !(q == 0 and k ==0)
+        if valid_xy(x+q, i+k) and !(q == 0 and k ==0)
+          plus_one(x+q,i+k, white, 'king')
 
   no_piece = (a,i,white) ->
     ''
@@ -251,7 +261,8 @@
     if attacked_piece is 'king'
       if(piece_cell.hasClass(other_color))
         cell.addClass('check')
-    if all_pieces.indexOf(attacking_piece) < all_pieces.indexOf(attacked_piece) && piece_cell.hasClass(other_color)
+    threat = piece_values[attacking_piece] < piece_values[attacked_piece]
+    if threat && piece_cell.hasClass(other_color)
       cell.addClass('threat')
 
   straight_plus = (x, i, dx, di, white, piece) ->
