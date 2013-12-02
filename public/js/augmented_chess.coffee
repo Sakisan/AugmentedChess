@@ -66,6 +66,7 @@
     unstyle('td.black', 'black')
     unstyle('td.pinned', 'pinned')
     unstyle('td.unprotected', 'unprotected')
+    unstyle('td.threat', 'threat')
     unstyle('td.check', 'check')
     $('#colors').find('input').each ->
       $(this).val(0)
@@ -195,48 +196,48 @@
 
   pawn = (x,i, white) ->
     y = if white then 1 else -1
-    plus_one(x-1,i+y, white) if x-1 >= 1
-    plus_one(x+1,i+y, white) if x+1 <= 8
+    plus_one(x-1,i+y, white, 'pawn') if x-1 >= 1
+    plus_one(x+1,i+y, white, 'pawn') if x+1 <= 8
 
   rook = (x,i,white) ->
-    straight_plus(x, i, 1, 0, white)
-    straight_plus(x, i, -1, 0, white)
-    straight_plus(x, i, 0, 1, white)
-    straight_plus(x, i, 0, -1, white)
+    straight_plus(x, i, 1, 0, white, 'rook')
+    straight_plus(x, i, -1, 0, white, 'rook')
+    straight_plus(x, i, 0, 1, white, 'rook')
+    straight_plus(x, i, 0, -1, white, 'rook')
 
   knight = (x,i,white) ->
     for q in [-1,1]
       for k in [-2,2]
-        plus_one(x+q,i+k, white) if valid_xy(x+q, i+k)
+        plus_one(x+q,i+k, white, 'knight') if valid_xy(x+q, i+k)
     for q in [-2,2]
       for k in [-1,1]
-        plus_one(x+q,i+k, white) if valid_xy(x+q, i+k)
+        plus_one(x+q,i+k, white, 'knight') if valid_xy(x+q, i+k)
 
   bishop = (x,i,white) ->
-    straight_plus(x, i, 1, 1, white)
-    straight_plus(x, i, -1, 1, white)
-    straight_plus(x, i, 1, -1, white)
-    straight_plus(x, i, -1, -1, white)
+    straight_plus(x, i, 1, 1, white, 'bishop')
+    straight_plus(x, i, -1, 1, white, 'bishop')
+    straight_plus(x, i, 1, -1, white, 'bishop')
+    straight_plus(x, i, -1, -1, white, 'bishop')
 
   queen = (x,i,white) ->
-    straight_plus(x, i, 1, 0, white)
-    straight_plus(x, i, -1, 0, white)
-    straight_plus(x, i, 0, 1, white)
-    straight_plus(x, i, 0, -1, white)
-    straight_plus(x, i, 1, 1, white)
-    straight_plus(x, i, -1, 1, white)
-    straight_plus(x, i, 1, -1, white)
-    straight_plus(x, i, -1, -1, white)
+    straight_plus(x, i, 1, 0, white, 'queen')
+    straight_plus(x, i, -1, 0, white, 'queen')
+    straight_plus(x, i, 0, 1, white, 'queen')
+    straight_plus(x, i, 0, -1, white, 'queen')
+    straight_plus(x, i, 1, 1, white, 'queen')
+    straight_plus(x, i, -1, 1, white, 'queen')
+    straight_plus(x, i, 1, -1, white, 'queen')
+    straight_plus(x, i, -1, -1, white, 'queen')
 
   king = (x,i,white) ->
     for q in [-1..1]
       for k in [-1..1]
-        plus_one(x+q,i+k, white) if valid_xy(x+q, i+k) and !(q == 0 and k ==0)
+        plus_one(x+q,i+k, white, 'king') if valid_xy(x+q, i+k) and !(q == 0 and k ==0)
 
   no_piece = (a,i,white) ->
     ''
 
-  plus_one = (a,i,white) ->
+  plus_one = (a,i,white, attacking_piece) ->
     a = s('abcdefgh',a-1)
     cell = $('#colors .'+i+' .'+a)
     color = if white then "white" else "black"
@@ -245,17 +246,20 @@
     cell_value = input.val()
     cell_value++
     input.val(cell_value)
-    if get_piece_on(a,i) is 'king'
-      piece_cell = $('#pieces .'+i+' .'+a)
+    attacked_piece = get_piece_on(a,i)
+    piece_cell = $('#pieces .'+i+' .'+a)
+    if attacked_piece is 'king'
       if(piece_cell.hasClass(other_color))
-        piece_cell.addClass('check')
+        cell.addClass('check')
+    if all_pieces.indexOf(attacking_piece) < all_pieces.indexOf(attacked_piece) && piece_cell.hasClass(other_color)
+      cell.addClass('threat')
 
-  straight_plus = (x, i, dx, di, white) ->
+  straight_plus = (x, i, dx, di, white, piece) ->
     one_more = valid_xy(x+dx, i+di)
     while one_more
       x+=dx
       i+=di
-      plus_one(x,i, white)
+      plus_one(x,i, white, piece)
       a = s('abcdefgh',x-1)
       one_more = valid_xy(x+dx, i+di) and continue_straight(a,i, white)
 
