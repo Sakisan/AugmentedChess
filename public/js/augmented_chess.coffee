@@ -442,6 +442,7 @@
   highlight_unprotected = $('#highlight_unprotected')
   highlight_pinned = $('#highlight_pinned')
   highlight_checks = $('#highlight_checks')
+  highlight_threats = $('#highlight_threats')
 
   white_influence.change ->
     preference_change()
@@ -456,6 +457,9 @@
     preference_change()
 
   highlight_checks.change ->
+    preference_change()
+
+  highlight_threats.change ->
     preference_change()
 
   preference_change = ->
@@ -490,6 +494,10 @@
       disable_style('check')
     else
       enable_style('check')
+    if !highlight_threats.is(':checked')
+      disable_style('threat')
+    else
+      enable_style('threat')
 
   # List of saved FEN
 

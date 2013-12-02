@@ -33,14 +33,17 @@ mixin makeTable(id)
       input(type="checkbox" id="black_influence")
       label(for="black_influence") Black's influence
     .checkbox
-      input(type="checkbox" id="highlight_unprotected")
+      input(type="checkbox" id="highlight_unprotected" checked)
       label(for="highlight_unprotected") Unprotected pieces
     .checkbox
-      input(type="checkbox" id="highlight_pinned")
+      input(type="checkbox" id="highlight_pinned" checked)
       label(for="highlight_pinned") Pinned pieces
     .checkbox
-      input(type="checkbox" id="highlight_checks")
+      input(type="checkbox" id="highlight_checks" checked)
       label(for="highlight_checks") Checks
+    .checkbox
+      input(type="checkbox" id="highlight_threats" checked)
+      label(for="highlight_threats") Direct threats
     #saved
       p
         label Your saved FEN
