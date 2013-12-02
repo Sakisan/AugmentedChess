@@ -6,11 +6,11 @@ mixin makeTable(id)
           td(class=letter)
             .piece
             .times
-              input(type='hidden' class="times white")
-              input(type='hidden' class="times black")
+              input(type='hidden' class="white")
+              input(type='hidden' class="black")
             .trade
-              input(type='hidden' class="trade white")
-              input(type='hidden' class="trade black")
+              input(type='hidden' class="white")
+              input(type='hidden' class="black")
 
 +makeTable('board')
 +makeTable('colors')

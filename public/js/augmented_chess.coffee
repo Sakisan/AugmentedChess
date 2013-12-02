@@ -156,7 +156,23 @@
           x = 'abcdefgh'.indexOf(a)+1
           eval(piece+'('+x+','+ i+','+ white+')')
     pinned_pieces()
+    obvious_threats()
     colorize()
+
+  obvious_threats = ->
+    for i in [1..8]
+      for j in [1..8]
+        a = s('abcdefgh',j-1)
+        color_cell = $('#colors .'+i+' .'+a)
+        value_white = color_cell.find('.times > input.white').val()
+        value_black = color_cell.find('.times > input.black').val()
+        balance = parseInt(value_white) - parseInt(value_black)
+        piece_cell = $('#pieces .'+i+' .'+a)
+        console.log(''+a+i+balance)
+        if piece_cell.hasClass('white') && balance < 0
+          color_cell.addClass('threat')
+        if piece_cell.hasClass('black') && balance > 0
+          color_cell.addClass('threat')
 
   colorize = ->
     unstyle('td.white1', 'white1')
@@ -170,8 +186,8 @@
         a = s('abcdefgh',j-1)
         cell = $('#colors .'+i+' .'+a)
         piece_cell = $('#pieces .'+i+' .'+a)
-        value_white = cell.find('input.white').val()
-        value_black = cell.find('input.black').val()
+        value_white = cell.find('.times > input.white').val()
+        value_black = cell.find('.times > input.black').val()
         value = parseInt(value_white) - parseInt(value_black)
         cell.addClass(valueColor(value))
         if value is 0 and get_piece_on(a,i) != 'no_piece'
