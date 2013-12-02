@@ -4,9 +4,13 @@ mixin makeTable(id)
       tr(class=number)
         each letter in ["a","b","c","d","e","f","g","h"]
           td(class=letter)
-            div
-            input(type='hidden' class="white")
-            input(type='hidden' class="black")
+            .piece
+            .times
+              input(type='hidden' class="times white")
+              input(type='hidden' class="times black")
+            .trade
+              input(type='hidden' class="trade white")
+              input(type='hidden' class="trade black")
 
 +makeTable('board')
 +makeTable('colors')

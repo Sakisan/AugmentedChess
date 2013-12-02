@@ -5,12 +5,12 @@
 
   piece_values = {}
   piece_values['no_piece'] = 0
-  piece_values['pawn'] = 0
+  piece_values['pawn'] = 1
   piece_values['knight'] = 3
   piece_values['bishop'] = 3
   piece_values['rook'] = 5
   piece_values['queen'] = 9
-  piece_values['king'] = 100
+  piece_values['king'] = 0
 
   fen_to_piece = {}
   fen_to_piece['p'] = 'black pawn'
@@ -169,6 +169,7 @@
       for j in [1..8]
         a = s('abcdefgh',j-1)
         cell = $('#colors .'+i+' .'+a)
+        piece_cell = $('#pieces .'+i+' .'+a)
         value_white = cell.find('input.white').val()
         value_black = cell.find('input.black').val()
         value = parseInt(value_white) - parseInt(value_black)
@@ -248,14 +249,22 @@
     ''
 
   plus_one = (a,i,white, attacking_piece) ->
+    # info
     a = s('abcdefgh',a-1)
     cell = $('#colors .'+i+' .'+a)
     color = if white then "white" else "black"
     other_color = if white then "black" else "white"
-    input = cell.find('input.'+color)
-    cell_value = input.val()
-    cell_value++
-    input.val(cell_value)
+    # store how many times attacked
+    times = cell.find('.times > input.'+color)
+    times_value = times.val()
+    times_value++
+    times.val(times_value)
+    # store trade potential
+    trade = cell.find('.trade > input.'+color)
+    trade_value = parseInt(trade.val())
+    trade_value+=piece_values[attacking_piece]
+    trade.val(trade_value)
+    # report checks or threats
     attacked_piece = get_piece_on(a,i)
     piece_cell = $('#pieces .'+i+' .'+a)
     if attacked_piece is 'king'
