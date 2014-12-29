@@ -10,7 +10,7 @@
   piece_values['bishop'] = 3
   piece_values['rook'] = 5
   piece_values['queen'] = 9
-  piece_values['king'] = 0
+  piece_values['king'] = 100
 
   fen_to_piece = {}
   fen_to_piece['p'] = 'black pawn'
@@ -168,7 +168,7 @@
         value_black = color_cell.find('.times > input.black').val()
         balance = parseInt(value_white) - parseInt(value_black)
         piece_cell = $('#pieces .'+i+' .'+a)
-        console.log(''+a+i+balance)
+        # console.log(''+a+i+balance)
         if piece_cell.hasClass('white') && balance < 0
           color_cell.addClass('threat')
         if piece_cell.hasClass('black') && balance > 0
