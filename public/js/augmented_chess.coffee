@@ -220,6 +220,15 @@
         myPiece = piece
     myPiece
 
+  get_color_piece_on = (a,i) ->
+    cell = $('#pieces .'+i+' .'+a)
+    color = "no_piece"
+    if cell.hasClass "white"
+      color = "white"
+    if cell.hasClass "black"
+      color = "black"
+    color
+
   pawn = (x,i, white) ->
     y = if white then 1 else -1
     plus_one(x-1,i+y, white, 'pawn') if x-1 >= 1
@@ -361,6 +370,11 @@
         if second is 1
           pin_a = s('abcdefgh',x-1)
           pin_i = i
+        pinned_color = get_color_piece_on(pin_a, pin_i)
+        if pinned_color == "white" && !white_target
+          second = 3
+        if pinned_color == "black" && white_target
+          second = 3
 
       one_more = valid_xy(x+dx, i+di) and second < 2
 
@@ -570,6 +584,32 @@
 
   unsave = (n) ->
     list_saved.find('#fen_'+n).remove()
+
+  $(document).ready ->
+    $('#pgn-form').submit (event) ->
+      event.preventDefault()
+      pgn = $('#pgn-text').val()
+      parsePGN(pgn)
+
+  parsePGN = (pgn) ->
+    pgn = $.trim(pgn).replace(/\n|\r/g, ' ').replace(/\s+/g, ' ')
+    pgn = pgn.replace(/\{((\\})|([^}]))+}/g, '')
+    pgn = /(1\. ?(N[acfh]3|[abcdefgh][34]).*)/m.exec(pgn)[1]
+    pgn = pgn.replace(new RegExp("1-0|1/2-1/2|0-1"), '')
+    pgn = pgn.replace(/^\d+\.+/, '')
+    pgn = pgn.replace(/\s\d+\.+/g, ' ')
+    moves = $.trim(pgn).split(/\s+/)
+    fen_back = new Array
+    fen_forward = new Array
+    chess = new Chess()
+    for move in moves
+      chess.move move
+      save_name.val move
+      fen = chess.fen()
+      add_saved_fen fen
+      fen_forward.push fen
+    fen_forward.reverse()
+    $("#load-pgn-button").click()
 
   the_end = 'end'
 ) jQuery

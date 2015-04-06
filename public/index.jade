@@ -30,6 +30,12 @@ mixin makeTable(id)
         span.glyphicon.glyphicon-chevron-right
       button.btn.btn-default(id="save") Save
       input.form-control(id="save_name" value="position 0")
+    .form-group
+      a#load-pgn-button.btn.btn-default(data-toggle="collapse" href="#pgn") Load PGN
+    #pgn.collapse
+      form#pgn-form
+        textarea#pgn-text.form-control(rows="5")
+        button.btn.btn-default(type="submit") Enter
     .checkbox
       input(type="checkbox" id="white_influence") 
       label(for="white_influence") White's influence
@@ -61,4 +67,3 @@ mixin makeTable(id)
       a(href="http://getbootstrap.com/") bootstrap, 
       a(href="http://glyphicons.com/") glyphicons, 
       a(href="http://pgn4web.casaschi.net/") pgn4web 
-
